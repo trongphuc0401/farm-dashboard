@@ -1,21 +1,21 @@
-import { useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import { LIGHT_THEME } from "../../constants/themeConstants";
 import LogoBlue from "../../assets/images/logo_blue.svg";
 import LogoWhite from "../../assets/images/logo_white.svg";
 import {
-  MdOutlineAttachMoney,
-  MdOutlineBarChart,
+  MdAddLocationAlt,
   MdOutlineClose,
-  MdOutlineCurrencyExchange,
+  MdPermContactCalendar,
   MdOutlineGridView,
   MdOutlineLogout,
   MdOutlineMessage,
   MdOutlinePeople,
   MdOutlineSettings,
-  MdOutlineShoppingBag,
 } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { PiPlantDuotone, PiCalculator } from "react-icons/pi";
+
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.scss";
 import { SidebarContext } from "../../context/SidebarContext";
 
@@ -23,8 +23,14 @@ const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);
   const navbarRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activePath, setActivePath] = useState(location.pathname);
 
-  // closing the navbar when clicked outside the sidebar area
+  useEffect(() => {
+    setActivePath(location.pathname);
+  }, [location]);
+
   const handleClickOutside = (event) => {
     if (
       navbarRef.current &&
@@ -42,6 +48,73 @@ const Sidebar = () => {
     };
   }, []);
 
+  const handleClick = (path) => (event) => {
+    event.preventDefault();
+    setActivePath(path);
+    closeSidebar();
+    navigate(path);
+  };
+
+  const menuItems = [
+    { path: "/", icon: <MdOutlineGridView size={18} />, text: "Dashboard" },
+    {
+      path: "/plantings",
+      icon: <PiPlantDuotone size={20} />,
+      text: "Plantings",
+    },
+    {
+      path: "/accounting",
+      icon: <PiCalculator size={20} />,
+      text: "Accounting",
+    },
+    {
+      path: "/contacts",
+      icon: <MdPermContactCalendar size={18} />,
+      text: "Contacts",
+    },
+    {
+      path: "/farm-map",
+      icon: <MdAddLocationAlt size={20} />,
+      text: "Farm Map",
+    },
+    {
+      path: "/customer",
+      icon: <MdOutlinePeople size={20} />,
+      text: "Customer",
+    },
+    {
+      path: "/messages",
+      icon: <MdOutlineMessage size={18} />,
+      text: "Messages",
+    },
+  ];
+
+  const bottomMenuItems = [
+    {
+      path: "/settings",
+      icon: <MdOutlineSettings size={20} />,
+      text: "Settings",
+    },
+    { path: "/logout", icon: <MdOutlineLogout size={20} />, text: "Logout" },
+  ];
+
+  const renderMenuItems = (items) => (
+    <ul className="menu-list">
+      {items.map((item) => (
+        <li className="menu-item" key={item.path}>
+          <Link
+            to={item.path}
+            className={`menu-link ${activePath === item.path ? "active" : ""}`}
+            onClick={handleClick(item.path)}
+          >
+            <span className="menu-link-icon">{item.icon}</span>
+            <span className="menu-link-text">{item.text}</span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <nav
       className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`}
@@ -50,93 +123,16 @@ const Sidebar = () => {
       <div className="sidebar-top">
         <div className="sidebar-brand">
           <img src={theme === LIGHT_THEME ? LogoBlue : LogoWhite} alt="" />
-          <span className="sidebar-brand-text">tabernam.</span>
+          <span className="sidebar-brand-text">DraFarm.</span>
         </div>
         <button className="sidebar-close-btn" onClick={closeSidebar}>
           <MdOutlineClose size={24} />
         </button>
       </div>
       <div className="sidebar-body">
-        <div className="sidebar-menu">
-          <ul className="menu-list">
-            <li className="menu-item">
-              <Link to="/" className="menu-link active">
-                <span className="menu-link-icon">
-                  <MdOutlineGridView size={18} />
-                </span>
-                <span className="menu-link-text">Dashboard</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineBarChart size={20} />
-                </span>
-                <span className="menu-link-text">Statistics</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineAttachMoney size={20} />
-                </span>
-                <span className="menu-link-text">Payment</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineCurrencyExchange size={18} />
-                </span>
-                <span className="menu-link-text">Transactions</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineShoppingBag size={20} />
-                </span>
-                <span className="menu-link-text">Products</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlinePeople size={20} />
-                </span>
-                <span className="menu-link-text">Customer</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineMessage size={18} />
-                </span>
-                <span className="menu-link-text">Messages</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
-
+        <div className="sidebar-menu">{renderMenuItems(menuItems)}</div>
         <div className="sidebar-menu sidebar-menu2">
-          <ul className="menu-list">
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineSettings size={20} />
-                </span>
-                <span className="menu-link-text">Settings</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/" className="menu-link">
-                <span className="menu-link-icon">
-                  <MdOutlineLogout size={20} />
-                </span>
-                <span className="menu-link-text">Logout</span>
-              </Link>
-            </li>
-          </ul>
+          {renderMenuItems(bottomMenuItems)}
         </div>
       </div>
     </nav>
