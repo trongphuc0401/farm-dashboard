@@ -1,5 +1,8 @@
 import { useState } from "react";
+import { Button, Dropdown, Menu } from "antd";
+import { Link } from "react-router-dom";
 import "./AreaTop.scss";
+import { FaEllipsisH } from "react-icons/fa";
 
 const AreaTopPlanting = () => {
   const [showForm, setShowForm] = useState(false);
@@ -18,6 +21,20 @@ const AreaTopPlanting = () => {
     setFormType("plantingDetails");
   };
 
+  const menu = (record) => (
+    <Menu>
+      <Menu.Item key="1">
+        <Link to={`/import/${record.id}`}>Import Records</Link>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <Link to={`/${record.id}`}>Download All Records</Link>
+      </Menu.Item>
+      <Menu.Item key="3">Print</Menu.Item>
+    </Menu>
+  );
+
+  const record = { id: 1 };
+
   return (
     <section>
       <div className="area-top">
@@ -34,9 +51,17 @@ const AreaTopPlanting = () => {
                     New Crop Type
                   </button>
                   <button className="btn btn-secondary">Add Planting</button>
-                  <button className="btn btn-secondary">
-                    <span className="icon-ellipsis-h"></span>
-                  </button>
+
+                  <Dropdown
+                    overlay={menu(record)}
+                    placement="bottomLeft"
+                    arrow
+                    trigger={["click"]}
+                  >
+                    <Button>
+                      <FaEllipsisH />
+                    </Button>
+                  </Dropdown>
                 </div>
                 <div className="search-filter">
                   <div className="search">

@@ -219,6 +219,8 @@
     z-index: 1000;
     width: 90%;
     max-width: 500px;
+    max-height: 80%; /* Giới hạn chiều cao tối đa */
+    overflow: auto; /* Thêm thuộc tính overflow */
 
   h3 {
     margin-bottom: 20px;

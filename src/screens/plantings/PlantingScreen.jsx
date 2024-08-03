@@ -1,9 +1,10 @@
-import { AreaTopPlanting } from "../../components";
+import { AreaTablePlanting, AreaTopPlanting } from "../../components";
 
 const Plantings = () => {
   return (
     <div className="content-area">
       <AreaTopPlanting />
+      <AreaTablePlanting />
     </div>
   );
 };

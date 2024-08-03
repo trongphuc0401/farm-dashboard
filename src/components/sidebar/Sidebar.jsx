@@ -1,8 +1,13 @@
 import { useState, useContext, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+
 import { ThemeContext } from "../../context/ThemeContext";
 import { LIGHT_THEME } from "../../constants/themeConstants";
+
 import LogoBlue from "../../assets/images/logo_blue.svg";
 import LogoWhite from "../../assets/images/logo_white.svg";
+
 import {
   MdAddLocationAlt,
   MdOutlineClose,
@@ -13,11 +18,12 @@ import {
   MdOutlinePeople,
   MdOutlineSettings,
 } from "react-icons/md";
-import { PiPlantDuotone, PiCalculator } from "react-icons/pi";
+import { PiPlantDuotone, PiBookBookmark } from "react-icons/pi";
 
-import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Sidebar.scss";
+
 import { SidebarContext } from "../../context/SidebarContext";
+// import { LOGOUT } from "../../redux/actions/authActions";
 
 const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
@@ -27,6 +33,7 @@ const Sidebar = () => {
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);
 
+  // const dispatch = useDispatch();
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location]);
@@ -55,6 +62,17 @@ const Sidebar = () => {
     navigate(path);
   };
 
+  // const handleLogout = async () => {
+  //   try {
+  //     localStorage.removeItem("authToken");
+  //     await dispatch(LOGOUT);
+  //     navigate("/login");
+  //   } catch (error) {
+  //     console.error("Logout failed:", error);
+  //     // Xử lý lỗi ở đây, có thể hiển thị thông báo cho người dùng
+  //   }
+  // };
+
   const menuItems = [
     { path: "/", icon: <MdOutlineGridView size={18} />, text: "Dashboard" },
     {
@@ -63,9 +81,9 @@ const Sidebar = () => {
       text: "Plantings",
     },
     {
-      path: "/accounting",
-      icon: <PiCalculator size={20} />,
-      text: "Accounting",
+      path: "/guide",
+      icon: <PiBookBookmark size={20} />,
+      text: "Guide",
     },
     {
       path: "/contacts",
@@ -95,7 +113,12 @@ const Sidebar = () => {
       icon: <MdOutlineSettings size={20} />,
       text: "Settings",
     },
-    { path: "/logout", icon: <MdOutlineLogout size={20} />, text: "Logout" },
+    {
+      path: "/logout",
+      icon: <MdOutlineLogout size={20} />,
+      text: "Logout",
+      // onClick: handleLogout, // Thêm này
+    },
   ];
 
   const renderMenuItems = (items) => (
@@ -105,7 +128,7 @@ const Sidebar = () => {
           <Link
             to={item.path}
             className={`menu-link ${activePath === item.path ? "active" : ""}`}
-            onClick={handleClick(item.path)}
+            onClick={item.onClick || handleClick(item.path)} // Thay đổi này
           >
             <span className="menu-link-icon">{item.icon}</span>
             <span className="menu-link-text">{item.text}</span>
